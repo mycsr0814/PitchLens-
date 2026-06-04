@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+:root {
+  /* 무대 조명 컨셉 - 딥 다크 + 앰버/골드 포인트 */
+  --bg:         #080A0E;
+  --bg2:        #0D1117;
+  --surface:    #111520;
+  --surface2:   #181E2E;
+  --surface3:   #1F2640;
+  --border:     #252D42;
+  --border2:    #2E3A55;
+
+  --gold:       #F5A623;
+  --gold2:      #E8943A;
+  --gold-glow:  rgba(245,166,35,0.15);
+  --teal:       #00C9A7;
+  --teal-glow:  rgba(0,201,167,0.12);
+  --red:        #FF4D6D;
+  --red-glow:   rgba(255,77,109,0.12);
+
+  --text:       #E8EDF5;
+  --text2:      #8A94A8;
+  --text3:      #4A5568;
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Outfit', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 배경 그리드 패턴 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245,166,35,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,166,35,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root { position: relative; z-index: 1; }
+
+.auth-tagline--mobile { display: none; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+button { font-family: var(--font-body); cursor: pointer; border: none; outline: none; transition: all 0.2s; }
+input, textarea { font-family: var(--font-mono); outline: none; }
+
+@keyframes spin    { to { transform: rotate(360deg); } }
+@keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+@keyframes fadeUp  { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes glow    { 0%,100% { box-shadow: 0 0 20px var(--gold-glow); } 50% { box-shadow: 0 0 40px rgba(245,166,35,0.3); } }
+
+/* 로그인/회원가입 — JS 감지 실패 시에도 모바일 레이아웃 유지 */
+@media (max-width: 760px) {
+  .auth-page {
+    flex-direction: column !important;
+    min-height: 100svh !important;
+    padding: 50px 20px 22px !important;
+    overflow-y: auto !important;
+    background: linear-gradient(180deg, #0B0F17 0%, #080A0E 54%, #0B0F17 100%) !important;
+  }
+
+  .auth-brand {
+    width: 100% !important;
+    border-right: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+    flex-shrink: 0 !important;
+  }
+
+  .auth-brand-content {
+    gap: 12px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .auth-brand-desktop-only {
+    display: none !important;
+  }
+
+  .auth-tagline--desktop {
+    display: none !important;
+  }
+
+  .auth-tagline--mobile {
+    display: block !important;
+  }
+
+  .auth-form-side {
+    display: block !important;
+    padding: 26px 0 0 !important;
+    background: transparent !important;
+    flex: 0 1 auto !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+
+  .auth-form-wrap {
+    max-width: none !important;
+  }
+}
+
+@media (min-width: 761px) {
+  .auth-tagline--mobile {
+    display: none !important;
+  }
+}

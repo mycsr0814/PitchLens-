@@ -1,0 +1,10 @@
+{
+  "appId": "com.pitchlens.app",
+  "appName": "PitchLens",
+  "webDir": "build",
+  "server": {
+    "androidScheme": "http"
+  },
+  "android": {},
+  "ios": {}
+}
