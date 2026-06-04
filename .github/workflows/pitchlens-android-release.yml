@@ -70,7 +70,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -97,21 +97,50 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          set -o pipefail
           chmod +x gradlew
           ./gradlew assembleRelease \
             -PappVersionCode=${{ steps.version.outputs.code }} \
             -PappVersionName=${{ steps.version.outputs.name }} \
             --no-daemon --stacktrace 2>&1 | tee ../gradle-build.log
 
+      - name: Upload Gradle log (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-log
+          path: ${{ env.APP_DIR }}/gradle-build.log
+
       - name: Locate Release APK
         id: apk
         working-directory: ${{ env.APP_DIR }}
         run: |
-          DIR="android/app/build/outputs/apk/release"
-          ls -la "$DIR" || true
-          test -f "$DIR/app-release.apk" || (echo "::error::app-release.apk 없음. gradle 로그 확인." && exit 1)
-          DST="$DIR/PitchLens-${{ steps.version.outputs.name }}.apk"
-          cp "$DIR/app-release.apk" "$DST"
+          echo "=== APK search ==="
+          find android -name "*.apk" -type f 2>/dev/null || true
+
+          SRC=""
+          for candidate in \
+            "android/app/build/outputs/apk/release/app-release.apk" \
+            "android/app/build/outputs/apk/release/app-release-unsigned.apk"; do
+            if [ -f "$candidate" ]; then
+              SRC="$candidate"
+              break
+            fi
+          done
+
+          if [ -z "$SRC" ]; then
+            echo "::error::APK를 찾을 수 없습니다. 위 단계(Build signed Release APK) 로그 또는 gradle-build-log 아티팩트를 확인하세요."
+            exit 1
+          fi
+
+          if [[ "$SRC" == *"-unsigned.apk" ]]; then
+            echo "::error::서명된 APK가 아닙니다. GitHub Secrets(키스토어)를 확인하세요."
+            exit 1
+          fi
+
+          DST="android/app/build/outputs/apk/release/PitchLens-${{ steps.version.outputs.name }}.apk"
+          mkdir -p "$(dirname "$DST")"
+          cp "$SRC" "$DST"
           echo "path=$PWD/$DST" >> "$GITHUB_OUTPUT"
 
       - name: Upload APK artifact (backup)
