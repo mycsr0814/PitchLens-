@@ -1,0 +1,35 @@
+# 환경·비밀
+.env
+.env.local
+.env.production
+*.keystore
+*.jks
+
+# Node
+node_modules/
+build/
+dist/
+
+# Android / iOS 빌드 산출물
+**/android/**/build/
+**/android/.gradle/
+**/android/local.properties
+**/android/.idea/
+**/ios/App/Pods/
+**/ios/App/build/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE·OS
+.idea/
+.vs/
+.DS_Store
+*.log
+
+# 학습·캐시
+**/delivery_learning_models/transcripts_cache.json
+.claude/

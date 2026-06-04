@@ -1,0 +1,10 @@
+{
+  "appId": "com.pitchlens.admin",
+  "appName": "PitchLens Admin",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http"
+  },
+  "android": {},
+  "ios": {}
+}
